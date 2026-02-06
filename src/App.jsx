@@ -12,7 +12,7 @@ import Login from './pages/Auth/Login';
 import Home from './pages/Dashboard/Home';
 import Expense from './pages/Dashboard/Expense';
 import UserProvider from './context/UserContext';
-import Income from './pages/Dashboard/income';
+import Income from './pages/Dashboard/Income';
 import {Toaster } from "react-hot-toast";
 import ProfileSettings from './pages/Dashboard/ProfileSettings';
 import ResetPassword from './pages/Dashboard/ResetPassword';
