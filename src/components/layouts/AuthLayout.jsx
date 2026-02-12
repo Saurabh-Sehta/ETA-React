@@ -2,6 +2,7 @@
 import React from 'react';
 import CARD from '../../assets/images/card.png';
 import { LuTrendingUpDown } from "react-icons/lu";
+import logo from "../../assets/images/logo.jpg";
 
 const AuthLayout = ({ children }) => {
   return (
@@ -9,7 +10,7 @@ const AuthLayout = ({ children }) => {
       {/* Left Side */}
       <div className="w-screen h-screen md:w-[60vw] px-12 pt-8 pb-12">
         <div className='flex items-center mb-8'>
-          <img src="src/assets/images/logo.jpg" alt="Logo" className="w-10 h-10" />
+          <img src={logo} alt="Logo" className="w-10 h-10" />
           <h2 className="text-lg font-medium text-black">
             Expense Tracking Application
           </h2>
