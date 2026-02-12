@@ -52,28 +52,6 @@ const ProfileSettings = () => {
     return response.data.secure_url;
   };
 
-  const handleSaveOption = async (e) => {
-    e.preventDefault();
-
-    setError(null);
-
-    try {
-      let profileImageUrl = profileData?.profileUrl || "";
-      if (selectedImage) {
-        profileImageUrl = await uploadToCloudinary(selectedImage);
-      }
-      // API call to save changes
-    } catch (err) {
-      if (err.response && err.response.data.message) {
-        setError(err.response.data.message);
-        console.log(err.response.data);
-      } else {
-        console.log(err);
-        setError("Signup failed. Try again.");
-      }
-    }
-  }
-
   const handleCancelChanges = () => {
     setProfileData(originalProfileData);
     setSelectedImage(null);
@@ -92,6 +70,7 @@ const ProfileSettings = () => {
         }
       );
       if (response.status === 200) {
+        localStorage.removeItem("token");
         toast.success("Account deleted successfully");
         setOpenDeleteAlert({ show: false, data: null });
         navigate("/login");

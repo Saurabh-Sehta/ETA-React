@@ -6,6 +6,11 @@ export const API_PATHS = {
         LOGIN: "/api/v1/auth/login",
         REGISTER: "/api/v1/auth/register",
         GET_USER_INFO: "/api/v1/auth/getUser",
+        SEND_OTP: "/api/v1/auth/send-otp",
+        VERIFY_OTP: "/api/v1/auth/verify-otp",
+        SEND_RESET_OTP: "/api/v1/auth/send-reset-otp",
+        VERIFY_RESET_OTP: "/api/v1/auth/verify-reset-otp",
+        RESET_PASSWORD: "/api/v1/auth/reset-password",
     },
     DASHBOARD: {
         GET_DATA: "/api/v1/dashboard",
@@ -27,7 +32,9 @@ export const API_PATHS = {
     },
     SETTINGS: {
         UPDATE_PROFILE: "/api/v1/settings/update-profile",
-        RESET_PASSWORD: "/api/v1/settings/reset-password",
         DELETE_ACCOUNT: "/api/v1/settings/delete",
+        SEND_RESET_OTP: "/api/v1/settings/send-reset-otp",
+        VERIFY_RESET_OTP: "/api/v1/settings/verify-reset-otp",
+        RESET_PASSWORD: "/api/v1/settings/reset-password",
     }
 };

@@ -8,9 +8,9 @@ import { API_PATHS } from "../../utils/apiPaths";
 import { UserContext } from '../../context/UserContext';
 
 const Login = () => {
-  const [email,setEmail] = useState("");
-  const [password,setPassword] = useState("");
-  const [error,setError] = useState(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
 
   const { updateUser } = useContext(UserContext);
 
@@ -19,12 +19,12 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    if(!validateEmail(email)){
+    if (!validateEmail(email)) {
       setError("Please enter a valid email address")
       return;
     }
 
-    if(!password){
+    if (!password) {
       setError("Please enter the password")
       return;
     }
@@ -32,13 +32,13 @@ const Login = () => {
     setError("");
 
     //Login API Call
-    try{
+    try {
       const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, {
         email,
         password,
       });
       const { token, user } = response.data;
-      
+
       if (token) {
         localStorage.setItem("token", token);
         updateUser(user);
@@ -64,17 +64,17 @@ const Login = () => {
         </p>
 
         <form onSubmit={handleLogin}>
-          <MyInput value={email} 
-          onChange={({target}) => setEmail(target.value)}
-          label="Email Address"
-          placeholder="john@example.com"
-          type="text"/>
+          <MyInput value={email}
+            onChange={({ target }) => setEmail(target.value)}
+            label="Email Address"
+            placeholder="john@example.com"
+            type="text" />
 
-          <MyInput value={password} 
-          onChange={({target}) => setPassword(target.value)}
-          label="Password"
-          placeholder="Min 8 Characters"
-          type="password"/>
+          <MyInput value={password}
+            onChange={({ target }) => setPassword(target.value)}
+            label="Password"
+            placeholder="Min 8 Characters"
+            type="password" />
 
           {error && <p className='text-red-500 text-xs pb-2.5'>{error}</p>}
 
@@ -82,12 +82,28 @@ const Login = () => {
             LOGIN
           </button>
 
-          <p className='text-[13px] text-slate-500 mt-3'>
-            Don't have an account?{" "}
-            <Link className="font-medium text-primary underline" to="/signUp">
-              SignUp
+          <div className="flex items-center justify-between mt-4 text-sm">
+
+            <Link
+              to="/forgot-password"
+              className="text-primary hover:text-primary/80 transition"
+            >
+              Forgot Password?
             </Link>
-          </p>
+
+            <span className="text-slate-500">
+              Don’t have an account?{" "}
+              <Link
+                to="/signUp"
+                className="font-semibold text-primary hover:text-primary/80 transition"
+              >
+                Sign Up
+              </Link>
+            </span>
+
+          </div>
+
+
         </form>
       </div>
     </AuthLayout>

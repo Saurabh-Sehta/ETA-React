@@ -16,6 +16,8 @@ import Income from './pages/Dashboard/Income';
 import {Toaster } from "react-hot-toast";
 import ProfileSettings from './pages/Dashboard/ProfileSettings';
 import ResetPassword from './pages/Dashboard/ResetPassword';
+import EmailVerify from './pages/Auth/EmailVerify';
+import ForgotPassword from './pages/Auth/ForgotPassword';
 
 const App = () => {
   return (
@@ -27,6 +29,8 @@ const App = () => {
           <Route path="/" element={<Root />} />
           <Route path="/login" exact element={<Login />} />
           <Route path="/signUp" exact element={<SignUp />} />
+          <Route path="/email-verify" exact element={<EmailVerify />} />
+          <Route path="/forgot-password" exact element={<ForgotPassword />} />
           <Route path="/dashboard" exact element={<Home />} />
           <Route path="/income" exact element={<Income />} />
           <Route path="/expense" exact element={<Expense />} />
@@ -58,27 +62,3 @@ const Root = () =>{
   // redirect to dashboard if authenticated , otherwise login
   return isAuthenticaed ? (<Navigate to = "/dashboard" />) : (<Navigate to = "/login" />) ; 
 }
-
-
-// const Root = () => {
-//   const [loading, setLoading] = React.useState(true);
-//   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-
-//   React.useEffect(() => {
-//     const token = localStorage.getItem("token");
-
-//     if (!token) {
-//       setLoading(false);
-//       return;
-//     }
-
-//     axiosInstance.get("/auth/me")
-//       .then(() => setIsAuthenticated(true))
-//       .catch(() => localStorage.removeItem("token"))
-//       .finally(() => setLoading(false));
-//   }, []);
-
-//   if (loading) return <div>Loading...</div>;
-
-//   return isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/login" />;
-// };

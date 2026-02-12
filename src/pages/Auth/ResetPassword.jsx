@@ -6,7 +6,6 @@ import toast from 'react-hot-toast';
 import axiosInstance from '../../utils/axiosinstance';
 import { API_PATHS } from '../../utils/apiPaths';
 import { useNavigate } from 'react-router-dom';
-import { validateEmail } from '../../utils/helper';
 
 const ResetPassword = () => {
 
@@ -39,10 +38,6 @@ const ResetPassword = () => {
 
   const onEmailSubmit = async (e) => {
     e.preventDefault();
-    if (!validateEmail(email)) {
-      toast.error("Please enter a valid email address");
-      return;
-    }
     try {
       const response = await axiosInstance.post(`${API_PATHS.SETTINGS.SEND_RESET_OTP}?email=` + email);
       if (response.status === 200) {

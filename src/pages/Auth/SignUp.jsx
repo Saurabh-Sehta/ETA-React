@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import AuthLayout from '../../components/layouts/AuthLayout';
@@ -7,7 +7,6 @@ import ProfilePhotoSelector from '../../components/Inputs/ProfilePhotoSelector';
 import { validateEmail } from '../../utils/helper';
 import axiosInstance from '../../utils/axiosinstance';
 import { API_PATHS } from '../../utils/apiPaths';
-import uploadImage from '../../utils/uploadImage';
 import axios from 'axios';
 
 const SignUp = () => {
@@ -15,6 +14,8 @@ const SignUp = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isVerified, setIsVerified] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
@@ -35,6 +36,15 @@ const SignUp = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
 
+    if (loading) {
+      return;
+    }
+
+    if (!isVerified) {
+      toast.error("Please verify your email before signing up.");
+      return;
+    }
+
     if (!fullName || !email || !password) {
       setError("Please fill all the fields");
       return;
@@ -54,23 +64,35 @@ const SignUp = () => {
 
     // Signup API call
     try {
+
+      setLoading(true);
+
       // Upload image if present
       let profileImageUrl = "";
       if (profilePic) {
         profileImageUrl = await uploadToCloudinary(profilePic);
       }
 
-      const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
-        fullName,
-        email,
-        password,
-        profileUrl: profileImageUrl,
-      });
+      if (isVerified) {
+        const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
+          fullName,
+          email,
+          password,
+          profileUrl: profileImageUrl,
+        });
 
-      if (response.status === 201) {
-        toast.success("Registration successful! Please log in.");
-        navigate("/login");
+        if (response.status === 201) {
+          localStorage.removeItem("verifyEmail");
+          localStorage.removeItem("name");
+          localStorage.removeItem("emailVerified");
+          toast.success("Registration successful! Please log in.");
+          navigate("/login");
+        } else {
+          toast.error("Registration failed. Please try again.");
+        }
       }
+
+
     } catch (err) {
       if (err.response && err.response.data.message) {
         setError(err.response.data.message);
@@ -80,7 +102,55 @@ const SignUp = () => {
         setError("Signup failed. Try again.");
       }
     }
+    finally {
+      setLoading(false);
+    }
   };
+
+  const handleVerify = async (email) => {
+
+    if (loading) {
+      return; // Prevent multiple clicks while loading
+    }
+
+    if (!validateEmail(email)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
+    if (!fullName.trim()) {
+      toast.error("Please enter your full name first");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      localStorage.setItem("verifyEmail", email);
+      localStorage.setItem("name", fullName);
+      localStorage.setItem("emailVerified", "false");
+      const response = await axiosInstance.post(`${API_PATHS.AUTH.SEND_OTP}?email=${email}`);
+      if (response.status === 200) {
+        navigate("/email-verify");
+        toast.success("OTP has been sent successfully!")
+      } else {
+        toast.error("Unable to send OTP!")
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something went wrong!");
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    const verified = localStorage.getItem("emailVerified");
+    if (verified === "true") {
+      setIsVerified(true);
+      setEmail(localStorage.getItem("verifyEmail") || "");
+      setFullName(localStorage.getItem("name") || "");
+    }
+  }, []);
 
   return (
     <AuthLayout>
@@ -102,13 +172,32 @@ const SignUp = () => {
               type="text"
             />
 
-            <MyInput
-              value={email}
-              onChange={({ target }) => setEmail(target.value)}
-              label="Email Address"
-              placeholder="john@example.com"
-              type="text"
-            />
+            <div className="w-full">
+              <div className="relative">
+                <label className="text-[13px] text-slate-800">Email Addresss</label>
+                <div className="input-box">
+                  <input
+                    type="text"
+                    placeholder="john@example.com"
+                    className={`w-full bg-transparent outline-none pr-28`}
+                    value={email}
+                    onChange={({ target }) => setEmail(target.value)}
+                    disabled={isVerified}
+                  />
+                </div>
+                <button
+                  type="button"
+                  className={`absolute right-2 top-15 -translate-y-1/2 px-4 py-1.5 text-sm 
+                 font-medium bg-primary text-white rounded-md 
+                 hover:bg-primary-dark transition
+                 hover:bg-primary-dark transition ${(isVerified || loading || !validateEmail(email)) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                  disabled={loading || isVerified || !validateEmail(email)}
+                  onClick={() => { handleVerify(email) }}
+                >
+                  {isVerified ? "Verified" : loading ? "Verifying..." : "Verify"}
+                </button>
+              </div>
+            </div>
 
             <MyInput
               value={password}
@@ -121,7 +210,7 @@ const SignUp = () => {
 
           {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
 
-          <button type="submit" className="btn-primary mt-4">
+          <button type="submit" className={`btn-primary mt-4 ${(!isVerified || loading) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`} disabled={!isVerified}>
             SIGN UP
           </button>
 
