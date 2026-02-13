@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import MyInput from '../../components/Inputs/MyInput';
 import EmojiPickerPopup from '../EmojiPickerPopup';
 
-const AddIncomeForm = ({onAddIncome}) => {
+const AddIncomeForm = ({onAddIncome, loading}) => {
     const [income, setIncome] = useState({
         source: "",
         amount: "",
@@ -46,10 +46,11 @@ const AddIncomeForm = ({onAddIncome}) => {
       <div className='flex justify-end mt-6'>
         <button
             type='button'
-            className='add-btn add-btn-fill'
-            onClick={() => onAddIncome (income)}
+            className={`add-btn add-btn-fill ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+            onClick={() => onAddIncome (income)} 
+            disabled={loading}
         >
-            Add Income
+             {loading ? "Adding..." : "Add Income"}                 
         </button>
       </div>
     </div>

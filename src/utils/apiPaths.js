@@ -30,6 +30,9 @@ export const API_PATHS = {
     IMAGE: {
         UPLOAD_IMAGE: "/api/v1/auth/upload-image",
     },
+    SUMMARY: {
+        GET_SUMMARY: "/api/v1/summary/get",
+    },
     SETTINGS: {
         UPDATE_PROFILE: "/api/v1/settings/update-profile",
         DELETE_ACCOUNT: "/api/v1/settings/delete",

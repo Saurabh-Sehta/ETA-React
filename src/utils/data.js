@@ -4,6 +4,7 @@ import {
     LuWalletMinimal,
     LuLogOut,
     LuSettings,
+    LuCalculator,
 } from "react-icons/lu";
 
 export const SIDE_MENU_DATA = [
@@ -27,6 +28,12 @@ export const SIDE_MENU_DATA = [
     },
     {
         id: "04",
+        label: "Summary",
+        icon: LuCalculator,
+        path: "/summary",
+    },
+    {
+        id: "05",
         label: "Settings",
         icon: LuSettings,
         path: "/settings",

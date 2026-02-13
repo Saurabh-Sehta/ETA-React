@@ -64,6 +64,7 @@ const Income = () => {
     }
 
     try {
+      setLoading(true);
       await axiosInstance.post(API_PATHS.INCOME.ADD_INCOME, {
         source,
         amount,
@@ -81,11 +82,15 @@ const Income = () => {
         error.response?.data?.message || error.message
       );
     }
+    finally {
+      setLoading(false);
+    }
   }
 
   // Delete Income
   const deleteIncome = async (id) => {
     try {
+      setLoading(true);
       await axiosInstance.delete(API_PATHS.INCOME.DELETE_INCOME(id))
 
       setOpenDeleteAlert({show: false, data: null});
@@ -96,6 +101,8 @@ const Income = () => {
         "Error deleting income",
         error.response?.data?.message || error.message
       );
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -157,7 +164,7 @@ const Income = () => {
         onClose = {() => setOpenAddIncomeModal(false)}
         title="Add Income"
       >
-        <AddIncomeForm onAddIncome={handleAddIncome} /> 
+        <AddIncomeForm onAddIncome={handleAddIncome} loading={loading}/> 
       </Modal>
 
       <Modal
@@ -168,6 +175,7 @@ const Income = () => {
         <DeleteAlert
          content="Are you sure you want to delete this income details ?"
          onDelete={() => deleteIncome(openDeleteAlert.data)} 
+         loading={loading}
         />
       </Modal>
     </DashboardLayout>
